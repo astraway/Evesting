@@ -45,7 +45,7 @@ namespace Evesting
     }
 
     class SQL {
-        public static object FiddleHelper { get; private set; }
+        
 
         private static String LoadConnectionString(string id = "Default")
         {
