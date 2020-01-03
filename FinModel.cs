@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Evesting
-{
-    public class FinModel
+{   //model for the Companies DB
+    public class CompanyDBModel
     {
         public int ID { get; set; }
         public string STOCK_TICKER { get; set; }

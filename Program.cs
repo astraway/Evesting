@@ -2,10 +2,14 @@
 using System.Data;
 using System.Configuration;
 using System.Data.SQLite;
-
+using System.Text;
 using Dapper;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Evesting
 {
@@ -20,92 +24,48 @@ namespace Evesting
             string companyName = Console.ReadLine().ToUpper();
             Console.WriteLine($"Starting Process for {stockName}" );
 
-            FinModel newCo = new FinModel { CO_NAME = companyName, STOCK_TICKER = stockName };
-
-            
-            SQL.ConnectToSQL();
-
-            SQL.WriteData(newCo);
-
-
-            var NetIncome = new NetIncome();
-            NetIncome.display(stockName);
-
-            var result = SQL.ReadData();
-
-
+            //used to connect to api
+            ApiHelper.InitializeClient();
+            //creates new object of the above inputs
+            CompanyDBModel newCo = new CompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
             
             
 
 
 
-            SQL.CloseConnection();
 
-        }
-    }
+            SQL.WriteCompanyData(newCo);
+            //I think i need this to call the api but not sure 
 
-    class SQL {
-        
-
-        private static String LoadConnectionString(string id = "Default")
-        {
-            return ConfigurationManager.ConnectionStrings[id].ConnectionString;
-        }
-        
-        public static void ConnectToSQL() {
-            // since im using using statements i dont think i need this function
-            Console.WriteLine("Connecting to DataBase");
-        }
-
-        public static void WriteData(FinModel finmodel) {
-            // auto closes conneciton at last curly
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                cnn.Execute("insert into Companies ( STOCK_TICKER, CO_NAME) values ( @STOCK_TICKER, @CO_NAME)", finmodel);
-            }
-
-
-            Console.WriteLine("Writting to DB");
-
-        }
-
-
-
-        public static List<FinModel> ReadData() {
-            Console.WriteLine("Reading DB");
             
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                string sql = "select * from Companies";
-                var output = cnn.Query<FinModel>(sql, new DynamicParameters());
-                foreach (var x in output)
-                {
-                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER: " + x.STOCK_TICKER + " CO_NAME: " + x.CO_NAME );
+
+
+            //used to run the sync version of stock price api call
+            static void StockPriceSyncTest() { 
+
+                string SPResult = StockPriceProcessor.WebClientAPICall();
+                //converts string to json 
+                StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(SPResult);
+
+                Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), NET_INCOME = 89000 }; 
+                //Console.WriteLine(Convert.ToDouble(Sp_json.Price));
+                SQL.WriteCurrentFinancialsData(StockPrice);
                 }
 
-                return output.ToList();
-                
-            }
-            
+            StockPriceSyncTest();
+
+            var CoResult = SQL.ReadCompanieData();
+            var FinancialResult = SQL.ReadCurrentFinancialsData();
+
+
         }
-
-        public static void CloseConnection()
-        {
-
-            Console.WriteLine("Disconecting from DB");
-        }
-
     }
 
 
 
-    class NetIncome {
-        public void display(string ticker)
-        {
-            Console.WriteLine($"Calculating Net Income for {ticker}");
-        }
+    
 
-    }
+
 
     class BookValue {
         public void display()
