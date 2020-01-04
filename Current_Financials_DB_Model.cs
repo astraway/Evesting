@@ -11,6 +11,10 @@ namespace Evesting
 
         public double STOCK_PRICE { get; set; }
 
+        public string STOCK_TICKER { get; set; }
+
+
+
 
     }
 }

@@ -10,13 +10,13 @@ namespace Evesting
     class StockPriceProcessor
     {
          //making a webclient call syncly
-        public static string WebClientAPICall()
+        public static string WebClientAPICall(CompanyDBModel company)
         {
 
             string Json = "";
             WebClient client = new WebClient();
 
-            Json = client.DownloadString("https://financialmodelingprep.com/api/v3/stock/real-time-price/AAPL");
+            Json = client.DownloadString($"https://financialmodelingprep.com/api/v3/stock/real-time-price/{ company.STOCK_TICKER}");
             
       
 

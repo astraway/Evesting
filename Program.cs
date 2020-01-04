@@ -35,24 +35,24 @@ namespace Evesting
 
 
             SQL.WriteCompanyData(newCo);
-            //I think i need this to call the api but not sure 
+            
 
             
 
 
             //used to run the sync version of stock price api call
-            static void StockPriceSyncTest() { 
+            static void StockPriceSyncTest(CompanyDBModel comodel) { 
 
-                string SPResult = StockPriceProcessor.WebClientAPICall();
-                //converts string to json 
+                string SPResult = StockPriceProcessor.WebClientAPICall(comodel);
+                
                 StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(SPResult);
 
-                Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), NET_INCOME = 89000 }; 
-                //Console.WriteLine(Convert.ToDouble(Sp_json.Price));
+                Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), STOCK_TICKER = comodel.STOCK_TICKER}; 
+                
                 SQL.WriteCurrentFinancialsData(StockPrice);
                 }
 
-            StockPriceSyncTest();
+            StockPriceSyncTest(newCo);
 
             var CoResult = SQL.ReadCompanieData();
             var FinancialResult = SQL.ReadCurrentFinancialsData();

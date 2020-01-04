@@ -58,7 +58,7 @@ namespace Evesting
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("insert into Current_Financials (ID, STOCK_PRICE, NET_INCOME ) values (@ID, @STOCK_PRICE, @NET_INCOME)", StockPrice);
+                cnn.Execute("insert into Current_Financials (ID, STOCK_PRICE, STOCK_TICKER) values (@ID, @STOCK_PRICE, @STOCK_TICKER)", StockPrice);
             }
 
 
@@ -78,7 +78,7 @@ namespace Evesting
                 var output = cnn.Query<Current_Financials_DB_Model>(sql, new DynamicParameters());
                 foreach (var x in output)
                 {
-                    Console.WriteLine("ID: " + x.ID + " NET_INCOME " + x.NET_INCOME + " STOCK_PRICE: " + x.STOCK_PRICE);
+                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER " + x.STOCK_TICKER + " STOCK_PRICE: " + x.STOCK_PRICE);
                 }
 
                 return output.ToList();
