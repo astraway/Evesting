@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -10,17 +11,21 @@ namespace Evesting
     class StockPriceProcessor
     {
          //making a webclient call syncly
-        public static string WebClientAPICall(CompanyDBModel company)
+        public static void WebClientAPICall(CompanyDBModel company)
         {
 
             string Json = "";
             WebClient client = new WebClient();
 
             Json = client.DownloadString($"https://financialmodelingprep.com/api/v3/stock/real-time-price/{ company.STOCK_TICKER}");
-            
-      
 
-            return Json;
+            StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(Json);
+
+            Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), STOCK_TICKER = company.STOCK_TICKER };
+
+            SQL.WriteCurrentFinancialsData(StockPrice);
+
+            
         }
 
         //making a call async 
@@ -33,7 +38,6 @@ namespace Evesting
                 if (response.IsSuccessStatusCode)
                 {
                     StockPriceModel result = await response.Content.ReadAsAsync<StockPriceModel>();
-
 
                     
                     Console.WriteLine("writting to Current Financials db in WebClientAPICallAsync");

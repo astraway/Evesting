@@ -86,5 +86,42 @@ namespace Evesting
             }
 
         }
+
+        public static void WriteOperatingCashData(Operating_Cash_DB_Model OperatingCash)
+        {
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("insert into Operating_cash (DATE, OPERATING_CASH_FLOW, STOCK_TICKER) values (@DATE, @OPERATING_CASH_FLOW, @STOCK_TICKER)", OperatingCash);
+            }
+
+
+            Console.WriteLine("Writting to Operating_Cash DB");
+
+        }
+
+
+
+        public static List<Operating_Cash_DB_Model> ReadOperatingCashData()
+        {
+            Console.WriteLine("Reading Operating_Cash DB");
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                string sql = "select * from Operating_Cash";
+                var output = cnn.Query<Operating_Cash_DB_Model>(sql, new DynamicParameters());
+                foreach (var x in output)
+                {
+                    Console.WriteLine("DATE: " + x.DATE + " STOCK_TICKER " + x.STOCK_TICKER + " OPERATING_CASH_FLOW: " + x.OPERATING_CASH_FLOW);
+                }
+
+                return output.ToList();
+
+            }
+
+        }
+
     }
+
+ 
 }

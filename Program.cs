@@ -37,26 +37,13 @@ namespace Evesting
             SQL.WriteCompanyData(newCo);
             
 
-            
-
-
             //used to run the sync version of stock price api call
-            static void StockPriceSyncTest(CompanyDBModel comodel) { 
-
-                string SPResult = StockPriceProcessor.WebClientAPICall(comodel);
-                
-                StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(SPResult);
-
-                Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), STOCK_TICKER = comodel.STOCK_TICKER}; 
-                
-                SQL.WriteCurrentFinancialsData(StockPrice);
-                }
-
-            StockPriceSyncTest(newCo);
+            StockPriceProcessor.WebClientAPICall(newCo);
+            OperatingCashProcessor.WebClientAPICall(newCo);
 
             var CoResult = SQL.ReadCompanyData();
             var FinancialResult = SQL.ReadCurrentFinancialsData();
-
+            var OperatingCash = SQL.ReadOperatingCashData();
 
         }
     }
