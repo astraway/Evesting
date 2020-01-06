@@ -34,7 +34,7 @@ namespace Evesting
 
 
 
-        public static List<CompanyDBModel> ReadCompanieData()
+        public static List<CompanyDBModel> ReadCompanyData()
         {
             Console.WriteLine("Reading DB");
 

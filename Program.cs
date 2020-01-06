@@ -54,7 +54,7 @@ namespace Evesting
 
             StockPriceSyncTest(newCo);
 
-            var CoResult = SQL.ReadCompanieData();
+            var CoResult = SQL.ReadCompanyData();
             var FinancialResult = SQL.ReadCurrentFinancialsData();
 
 
