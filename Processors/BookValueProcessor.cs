@@ -3,14 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json.Converters;
-
 
 namespace Evesting
 {
-    class OperatingCashProcessor
+    class BookValueProcessor
     {
-        //making a webclient call syncly
         public static void WebClientAPICall(CompanyDBModel company)
         {
 
@@ -23,20 +20,16 @@ namespace Evesting
 
             var OCJson = Top_Level.FromJson(Json);
 
-            Console.WriteLine("Writting to Operating_Cash DB");
+            Console.WriteLine("Writting to Book Value DB");
             foreach (var item in OCJson.Financials)
             {
-                Operating_Cash_DB_Model OperatingCash = new Operating_Cash_DB_Model { DATE = (item.Date), OPERATING_CASH_FLOW = (item.OperatingCashFlow), STOCK_TICKER = company.STOCK_TICKER };
-                SQL.WriteOperatingCashData(OperatingCash);
+                Dividends_DB_Model dividends = new Dividends_DB_Model { DATE = (item.Date), DIVIDENDS = (item.DividendPayments), STOCK_TICKER = company.STOCK_TICKER };
+                SQL.WriteDividendsData(dividends);
             }
 
-
-            //Operating_Cash_DB_Model OperatingCash = new Operating_Cash_DB_Model { DATE = (OCJson.Symbol[0]), OPERATING_CASH_FLOW = OCJson.  , STOCK_TICKER = company.STOCK_TICKER };
-
-            //SQL.WriteCurrentFinancialsData(StockPrice);
-
-
+            //next I need to implement book value and add these two together
         }
+
 
     }
 }

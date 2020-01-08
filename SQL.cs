@@ -36,7 +36,7 @@ namespace Evesting
 
         public static List<CompanyDBModel> ReadCompanyData()
         {
-            Console.WriteLine("Reading DB");
+            Console.WriteLine("Reading from Company DB");
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -70,10 +70,11 @@ namespace Evesting
 
         public static List<Current_Financials_DB_Model> ReadCurrentFinancialsData()
         {
-            Console.WriteLine("Reading DB");
+            Console.WriteLine("Reading from Current_Financials DB");
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
+                
                 string sql = "select * from Current_Financials";
                 var output = cnn.Query<Current_Financials_DB_Model>(sql, new DynamicParameters());
                 foreach (var x in output)
@@ -96,7 +97,7 @@ namespace Evesting
             }
 
 
-            Console.WriteLine("Writting to Operating_Cash DB");
+            
 
         }
 
@@ -113,6 +114,41 @@ namespace Evesting
                 foreach (var x in output)
                 {
                     Console.WriteLine("DATE: " + x.DATE + " STOCK_TICKER " + x.STOCK_TICKER + " OPERATING_CASH_FLOW: " + x.OPERATING_CASH_FLOW);
+                }
+
+                return output.ToList();
+
+            }
+
+        }
+
+
+        public static void WriteDividendsData(Dividends_DB_Model dividends)
+        {
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("insert into Dividends (DATE, DIVIDENDS, STOCK_TICKER) values (@DATE, @DIVIDENDS, @STOCK_TICKER)", dividends);
+            }
+
+
+
+
+        }
+
+
+
+        public static List<Dividends_DB_Model> ReadDividendsData()
+        {
+            Console.WriteLine("Reading Dividends DB");
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                string sql = "select * from Dividends";
+                var output = cnn.Query<Dividends_DB_Model>(sql, new DynamicParameters());
+                foreach (var x in output)
+                {
+                    Console.WriteLine("DATE: " + x.DATE + " DIVIDENDS " + x.DIVIDENDS + " STOCK_TICKER: " + x.STOCK_TICKER);
                 }
 
                 return output.ToList();

@@ -52,7 +52,7 @@ namespace Evesting
         public string IssuanceBuybacksOfShares { get; set; }
 
         [JsonProperty("Dividend payments")]
-        public string DividendPayments { get; set; }
+        public double DividendPayments { get; set; }
 
         [JsonProperty("Financing Cash Flow")]
         public string FinancingCashFlow { get; set; }

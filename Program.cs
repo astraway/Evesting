@@ -40,10 +40,12 @@ namespace Evesting
             //used to run the sync version of stock price api call
             StockPriceProcessor.WebClientAPICall(newCo);
             OperatingCashProcessor.WebClientAPICall(newCo);
+            BookValueProcessor.WebClientAPICall(newCo);
 
             var CoResult = SQL.ReadCompanyData();
             var FinancialResult = SQL.ReadCurrentFinancialsData();
             var OperatingCash = SQL.ReadOperatingCashData();
+            var BookValue_Dividends = SQL.ReadDividendsData();
 
         }
     }
@@ -54,12 +56,7 @@ namespace Evesting
 
 
 
-    class BookValue {
-        public void display()
-        {
-            Console.WriteLine("Calculating Book value");
-        }
-    }
+
 
     class Sales {
         public void display()
