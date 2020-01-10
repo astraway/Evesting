@@ -58,6 +58,7 @@ namespace Evesting
             Console.WriteLine("Stock price Async test");
             Console.WriteLine(result.Price);
 
+
         }
 
 

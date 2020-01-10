@@ -29,9 +29,6 @@ namespace Evesting
             //creates new object of the above inputs
             CompanyDBModel newCo = new CompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
             
-            
-
-
 
 
             SQL.WriteCompanyData(newCo);
@@ -46,6 +43,8 @@ namespace Evesting
             var FinancialResult = SQL.ReadCurrentFinancialsData();
             var OperatingCash = SQL.ReadOperatingCashData();
             var BookValue_Dividends = SQL.ReadDividendsData();
+
+
 
         }
     }
