@@ -35,20 +35,10 @@ namespace Evesting
 
 
 
-
-
-
-
-
-
-
-
-
-
         //making a call async 
-        private static async Task<StockPriceModel> WebClientAPICallAsync()
+        public override async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
         {
-            string url = "https://financialmodelingprep.com/api/v3/stock/real-time-price/GOOGL";
+            string url = $"https://financialmodelingprep.com/api/v3/stock/real-time-price/{ company.STOCK_TICKER}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -56,9 +46,10 @@ namespace Evesting
                 {
                     StockPriceModel result = await response.Content.ReadAsAsync<StockPriceModel>();
 
-                    
-                    Console.WriteLine("writting to Current Financials db in WebClientAPICallAsync");
-                    return result;
+                    company.STOCK_PRICE = result.Price;
+
+                    Console.WriteLine("Processing StockPriceProcessor.WebClientAPICallAsync");
+                    return company;
                 }
                 else
                 {
@@ -67,16 +58,8 @@ namespace Evesting
             }
         }
 
-        //making a call async , call this to call the above. 
-        public static async void LoadStockPriceDataAsync()
-        {
+        
 
-            var result = await StockPriceProcessor.WebClientAPICallAsync();
-            Console.WriteLine("Stock price Async test");
-            Console.WriteLine(result.Price);
-
-
-        }
 
 
     }

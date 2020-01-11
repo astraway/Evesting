@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evesting
 {
@@ -12,6 +13,12 @@ namespace Evesting
             return company;
         }
 
+        public virtual async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
+        {
+            return company;
+        }
+
+        
         public virtual void SqlRead()
         {
 

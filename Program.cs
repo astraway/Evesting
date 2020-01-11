@@ -15,7 +15,7 @@ namespace Evesting
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task  Main(string[] args)
         {
             
             Console.WriteLine("What is the stock name (ticker) you are looking for?");
@@ -33,21 +33,24 @@ namespace Evesting
             ProcessFactory processorFactory = new ProcessFactory();
 
             Processor StockPrice = processorFactory.CreateInstance("StockPriceProcessor");
-            StockPrice.WebClientAPICall(newCo);
+            var StockPriceTask = StockPrice.WebClientAPICallAsync(newCo);
+            var stockprice = await StockPriceTask;
 
-            Processor bookvalue = processorFactory.CreateInstance("BookValueProcessor"); 
+
+
+            Processor OperatingCash = processorFactory.CreateInstance("OperatingCashProcessor"); 
+            var OperatingCashTask = OperatingCash.WebClientAPICallAsync(newCo);
+            var operatingcash = await OperatingCashTask;
+
+
+            Processor bookvalue = processorFactory.CreateInstance("BookValueProcessor");
             bookvalue.WebClientAPICall(newCo);
 
-            Processor operatingcash = processorFactory.CreateInstance("OperatingCashProcessor"); 
-            operatingcash.WebClientAPICall(newCo);
 
 
 
 
 
-            
-
-            
             //var FinancialResult = SQL.ReadCurrentStockPriceData();
             //var OperatingCash = SQL.ReadOperatingCashData();
             //var BookValue_Dividends = SQL.ReadDividendsData();
