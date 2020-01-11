@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Evesting
 {
@@ -42,9 +44,41 @@ namespace Evesting
 
             return company;
         }
-        
+
+
+
+        //making a call async 
+        public override async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
+        {
+            string url = $"https://financialmodelingprep.com/api/v3/financials/cash-flow-statement/{ company.STOCK_TICKER}";
+
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Top_Level result = await response.Content.ReadAsAsync<Top_Level>();
+
+                    // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
+
+                    // in the mean time I will return a random number
+                    Random rnd = new Random();
+                    company.DIVIDENDS = Convert.ToDouble(rnd.Next());
+
+
+                    Console.WriteLine("Processing Dividends for BookValueProcessor.WebClientAPICallAsync");
+                    return company;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
 
     }
+
+
+
 }
 
 

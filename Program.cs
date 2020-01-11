@@ -43,8 +43,10 @@ namespace Evesting
             var operatingcash = await OperatingCashTask;
 
 
-            Processor bookvalue = processorFactory.CreateInstance("BookValueProcessor");
-            bookvalue.WebClientAPICall(newCo);
+            Processor BookValue = processorFactory.CreateInstance("BookValueProcessor");
+            var BookValueTask = BookValue.WebClientAPICallAsync(newCo);
+            var bookvalue = await BookValueTask;
+            
 
 
 
