@@ -19,32 +19,32 @@ namespace Evesting
         }
 
 
-        public static void WriteCompanyData(CompanyDBModel finmodel)
+        public static void WriteValueInvestingCompanyData(ValueInvestingCompanyDBModel ViCoModel)
         {
             
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("insert into Companies ( STOCK_TICKER, CO_NAME) values ( @STOCK_TICKER, @CO_NAME)", finmodel);
+                cnn.Execute("insert into Value_Investing_Companies ( STOCK_TICKER , CO_NAME , STOCK_PRICE , BOOK_VALUE , DIVIDENDS , OPERATING_CASH) values ( @STOCK_TICKER , @CO_NAME , @STOCK_PRICE , @BOOK_VALUE , @DIVIDENDS , @OPERATING_CASH)", ViCoModel);
             }
 
 
-            Console.WriteLine("Writting to DB");
+            Console.WriteLine("Writting to Value_Investing_Companies DB");
 
         }
 
 
 
-        public static List<CompanyDBModel> ReadCompanyData()
+        public static List<ValueInvestingCompanyDBModel> DisplayValueInvestingCompanyData()
         {
-            Console.WriteLine("Reading from Company DB");
+            Console.WriteLine("Reading from Value_Investing_Companies DB");
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string sql = "select * from Companies";
-                var output = cnn.Query<CompanyDBModel>(sql, new DynamicParameters());
+                string sql = "select * from Value_Investing_Companies";
+                var output = cnn.Query<ValueInvestingCompanyDBModel>(sql, new DynamicParameters());
                 foreach (var x in output)
                 {
-                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER: " + x.STOCK_TICKER + " CO_NAME: " + x.CO_NAME);
+                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER: " + x.STOCK_TICKER + " CO_NAME: " + x.CO_NAME + " STOCK_PRICE: " + x.STOCK_PRICE + " BOOK_VALUE: " + x.BOOK_VALUE + " DIVIDENDS: " + x.DIVIDENDS + " OPERATING_CASH: " + x.OPERATING_CASH);
                 }
 
                 return output.ToList();
@@ -53,30 +53,30 @@ namespace Evesting
 
         }
 
-        public static void WriteCurrentFinancialsData(Current_Financials_DB_Model StockPrice)
+        public static void WriteCurrentStockPriceData(Current_StockPrice_DB_Model StockPrice)
         {
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("insert into Current_Financials (ID, STOCK_PRICE, STOCK_TICKER) values (@ID, @STOCK_PRICE, @STOCK_TICKER)", StockPrice);
+                cnn.Execute("insert into Current_Stock_Price (ID, STOCK_PRICE, STOCK_TICKER) values (@ID, @STOCK_PRICE, @STOCK_TICKER)", StockPrice);
             }
 
 
-            Console.WriteLine("Writting to Current_Financials DB");
+            Console.WriteLine("Writting to Current_Stock_Price DB");
 
         }
 
 
 
-        public static List<Current_Financials_DB_Model> ReadCurrentFinancialsData()
+        public static List<Current_StockPrice_DB_Model> ReadCurrentStockPriceData()
         {
-            Console.WriteLine("Reading from Current_Financials DB");
+            Console.WriteLine("Reading from Current_Stock_Price DB");
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 
-                string sql = "select * from Current_Financials";
-                var output = cnn.Query<Current_Financials_DB_Model>(sql, new DynamicParameters());
+                string sql = "select * from Current_Stock_Price";
+                var output = cnn.Query<Current_StockPrice_DB_Model>(sql, new DynamicParameters());
                 foreach (var x in output)
                 {
                     Console.WriteLine("ID: " + x.ID + " STOCK_TICKER " + x.STOCK_TICKER + " STOCK_PRICE: " + x.STOCK_PRICE);

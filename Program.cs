@@ -27,31 +27,41 @@ namespace Evesting
             //used to connect to api
             ApiHelper.InitializeClient();
             //creates new object of the above inputs
-            CompanyDBModel newCo = new CompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
+            ValueInvestingCompanyDBModel newCo = new ValueInvestingCompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
+
+
+            ProcessFactory processorFactory = new ProcessFactory();
+
+            Processor StockPrice = processorFactory.CreateInstance("StockPriceProcessor");
+            StockPrice.WebClientAPICall(newCo);
+
+            Processor bookvalue = processorFactory.CreateInstance("BookValueProcessor"); 
+            bookvalue.WebClientAPICall(newCo);
+
+            Processor operatingcash = processorFactory.CreateInstance("OperatingCashProcessor"); 
+            operatingcash.WebClientAPICall(newCo);
+
+
+
+
+
             
 
-
-            SQL.WriteCompanyData(newCo);
             
+            //var FinancialResult = SQL.ReadCurrentStockPriceData();
+            //var OperatingCash = SQL.ReadOperatingCashData();
+            //var BookValue_Dividends = SQL.ReadDividendsData();
 
-            //used to run the sync version of stock price api call
-            StockPriceProcessor.WebClientAPICall(newCo);
-            OperatingCashProcessor.WebClientAPICall(newCo);
-            BookValueProcessor.WebClientAPICall(newCo);
-
-            var CoResult = SQL.ReadCompanyData();
-            var FinancialResult = SQL.ReadCurrentFinancialsData();
-            var OperatingCash = SQL.ReadOperatingCashData();
-            var BookValue_Dividends = SQL.ReadDividendsData();
-
-
+            SQL.WriteValueInvestingCompanyData(newCo);
+            SQL.DisplayValueInvestingCompanyData();
 
         }
     }
 
 
 
-    
+
+
 
 
 

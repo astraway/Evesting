@@ -8,10 +8,10 @@ using Newtonsoft.Json.Converters;
 
 namespace Evesting
 {
-    class OperatingCashProcessor
+    class OperatingCashProcessor : Processor
     {
         //making a webclient call syncly
-        public static void WebClientAPICall(CompanyDBModel company)
+        public override ValueInvestingCompanyDBModel WebClientAPICall(ValueInvestingCompanyDBModel company)
         {
 
             string Json = "";
@@ -34,6 +34,14 @@ namespace Evesting
             //Operating_Cash_DB_Model OperatingCash = new Operating_Cash_DB_Model { DATE = (OCJson.Symbol[0]), OPERATING_CASH_FLOW = OCJson.  , STOCK_TICKER = company.STOCK_TICKER };
 
             //SQL.WriteCurrentFinancialsData(StockPrice);
+
+
+
+
+            Random rnd = new Random();
+            company.OPERATING_CASH = Convert.ToDouble(rnd.Next());
+
+            return company;
 
 
         }
