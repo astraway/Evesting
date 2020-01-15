@@ -22,7 +22,7 @@ namespace Evesting
 
             //StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(Json);
 
-            var OCJson = Top_Level.FromJson(Json);
+            var OCJson = CashFlow_Top_Level.FromJson(Json);
 
             Console.WriteLine("Writting to Operating_Cash DB");
             foreach (var item in OCJson.Financials)
@@ -56,11 +56,15 @@ namespace Evesting
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    Top_Level result = await response.Content.ReadAsAsync<Top_Level>();
+                    CashFlow_Top_Level result = await response.Content.ReadAsAsync<CashFlow_Top_Level>();
 
-                    // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
-
-                    // in the mean time I will return a random number
+                    foreach (var item in result.Financials)
+                    {
+                        Console.WriteLine("Operating cash : " + item.OperatingCashFlow);
+                    }
+                    
+                    
+                    
                     Random rnd = new Random();
                     company.OPERATING_CASH = Convert.ToDouble(rnd.Next());
 
