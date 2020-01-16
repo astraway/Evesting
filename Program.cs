@@ -56,9 +56,6 @@ namespace Evesting
 
 
 
-            //var FinancialResult = SQL.ReadCurrentStockPriceData();
-            //var OperatingCash = SQL.ReadOperatingCashData();
-            //var BookValue_Dividends = SQL.ReadDividendsData();
 
             //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
             Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_SQL();
