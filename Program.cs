@@ -17,6 +17,9 @@ namespace Evesting
     {
         static async Task  Main(string[] args)
         {
+
+
+
             
             Console.WriteLine("What is the stock name (ticker) you are looking for?");
             string stockName = Console.ReadLine().ToUpper();
@@ -46,7 +49,7 @@ namespace Evesting
             Processor BookValue = processorFactory.CreateInstance("BookValue__Plus_Dividends_Processor");
             var BookValueTask = BookValue.WebClientAPICallAsync(newCo);
             var bookvalue = await BookValueTask;
-            
+
 
 
 
@@ -57,8 +60,10 @@ namespace Evesting
             //var OperatingCash = SQL.ReadOperatingCashData();
             //var BookValue_Dividends = SQL.ReadDividendsData();
 
-            SQL.WriteValueInvestingCompanyData(newCo);
-            SQL.DisplayValueInvestingCompanyData();
+            //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
+            Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_SQL();
+            valueInvestingModeRepository.WriteDate(newCo);
+            valueInvestingModeRepository.ReadData();
 
         }
     }
