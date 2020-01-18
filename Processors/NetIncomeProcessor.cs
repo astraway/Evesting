@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks
+
+
+//net profit or net earnings found on income statement, link below
 // using async from tim corey video, not working yet. 
 //namespace Evesting
 //{
@@ -38,10 +41,10 @@ using System.Threading.Tasks;
 //            var NetIncomeInfo = await NetIncomeProcessor.LoadNetIncomeAsync();
 //            Console.WriteLine("Net Income Async test");
 //            Console.WriteLine(NetIncomeInfo.Revenue);
-            
+
 //        }
 
-      
+
 
 
 //    }

@@ -89,9 +89,10 @@ namespace Evesting
     }
 
 
-    class ROI {
+    class ROE {
         public void display()
         {
+            //return on equity found already calculate on some sites, found by  net income(income statement)/Equity(balance sheet)
             Console.WriteLine("Calculating ROI");
         }
     }
@@ -99,6 +100,7 @@ namespace Evesting
     class ROIC  {
         public void display()
         {
+            //net income / (equity + Debt) 
             Console.WriteLine("Calculating ROIC");
         }
 
@@ -108,6 +110,7 @@ namespace Evesting
     class Debt {
         public void display()
         {
+            // debt 
             Console.WriteLine("Calculating Debt");
         }
 
