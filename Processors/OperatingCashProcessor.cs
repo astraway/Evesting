@@ -61,12 +61,13 @@ namespace Evesting
             {
                 if (response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("Processing OperatingCash.WebClientAPICallAsync");
                     CashFlow_Top_Level result = await response.Content.ReadAsAsync<CashFlow_Top_Level>();
 
-                    foreach (var item in result.Financials)
-                    {
-                        Console.WriteLine("Operating cash : " + item.OperatingCashFlow);
-                    }
+                    //foreach (var item in result.Financials)
+                    //{
+                    //    Console.WriteLine("Operating cash : " + item.OperatingCashFlow);
+                    //}
 
                     List<double> growth = new List<double>();
 
@@ -81,8 +82,8 @@ namespace Evesting
                         {
                             double change = CalculateChange(result.Financials[i - 1].OperatingCashFlow, result.Financials[i].OperatingCashFlow);
                             growth.Add(change);
-                            Console.WriteLine("growth for " + i);
-                            Console.WriteLine(change);
+                            //Console.WriteLine("growth for " + i);
+                            //Console.WriteLine(change);
                         }
 
                     }
@@ -101,7 +102,7 @@ namespace Evesting
 
                     company.OPERATING_CASH = growth.Average();
 
-                    Console.WriteLine("Processing OperatingCash.WebClientAPICallAsync");
+                    
                     return company;
                 }
                 else

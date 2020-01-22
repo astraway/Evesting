@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -58,55 +59,129 @@ namespace Evesting
             {
                 if (response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("Processing Dividends for BookValue__Plus_Dividends_Processor.WebClientAPICallAsync");
                     CashFlow_Top_Level result = await response.Content.ReadAsAsync<CashFlow_Top_Level>();
 
-                    foreach (var item in result.Financials)
+                    //foreach (var item in result.Financials)
+                    //{
+                    //    Console.WriteLine(item.DividendPayments);
+                    //}
+                    List<double> growth = new List<double>();
+
+                    for (int i = 0; i < result.Financials.Length; i++)
                     {
-                        Console.WriteLine(item.DividendPayments);
+                        if (i == 0)
+                        {
+                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+
+                        }
+                        else
+                        {
+                            double change = CalculateChange(result.Financials[i - 1].DividendPayments, result.Financials[i].DividendPayments);
+                            growth.Add(change);
+                            Console.WriteLine("dividend growth for " + i);
+                            Console.WriteLine(change);
+                        }
+
                     }
 
+                    double CalculateChange(double previous, double current)
+                    {
+                        if (previous == 0)
+                            previous = .001;
+
+                        var change = current - previous;
+                        return (double)change / previous;
+                    }
+
+                    Console.WriteLine("Dividends growth for " + result.Financials.Length.ToString() + " years  is : " + growth.Average());
+
+
+                    company.DIVIDENDS = growth.Average();
+
+
+                    
+                    
                     // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
 
                     // in the mean time I will return a random number
-                    Random rnd = new Random();
-                    company.DIVIDENDS = Convert.ToDouble(rnd.Next());
+                    //Random rnd = new Random();
+                    //company.DIVIDENDS = Convert.ToDouble(rnd.Next());
 
 
-                    Console.WriteLine("Processing Dividends for BookValueProcessor.WebClientAPICallAsync");
+                    
                     
                 }
                 else
                 {
+                    Console.WriteLine("Somethign went wrong");
                     throw new Exception(response.ReasonPhrase);
                 }
             }
             
-            string bookValueUrl = $"https://financialmodelingprep.com/api/v3/financials/balance-sheet-statement/{ company.STOCK_TICKER}";
+            string shareholderequityURL = $"https://financialmodelingprep.com/api/v3/financials/balance-sheet-statement/{ company.STOCK_TICKER}";
             
             
-                using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(bookValueUrl))
+                using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(shareholderequityURL))
                 {
                 if (response.IsSuccessStatusCode)
                 {
-                    Balance_Sheet_Rootobject BSresult = await response.Content.ReadAsAsync<Balance_Sheet_Rootobject>();
+                    Console.WriteLine("Processing Total Share holders Equity for BookValue__Plus_Dividends_Processor.WebClientAPICallAsync");
+                    Balance_Sheet_Rootobject BSresult =  await response.Content.ReadAsAsync<Balance_Sheet_Rootobject>();
 
-                    foreach (var item in BSresult.financials)
+                    //foreach (var item in BSresult.financials)
+                    //{
+                    //    Console.WriteLine("Total Share holders Equity: " + item.Totalshareholdersequity);
+                    //}
+                    List<double> shegrowth = new List<double>();
+
+                    for (int i = 0; i < BSresult.financials.Length; i++)
                     {
-                        Console.WriteLine("Total Share holders Equity: " + item.Totalshareholdersequity);
+                        if (i == 0)
+                        {
+                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+
+                        }
+                        else
+                        {
+                            double change = CalculateChange(BSresult.financials[i - 1].Totalshareholdersequity, BSresult.financials[i].Totalshareholdersequity);
+                            shegrowth.Add(change);
+                            //Console.WriteLine("Net Income growth for " + i);
+                            //Console.WriteLine(change);
+                        }
+
                     }
+
+                    double CalculateChange(double previous, double current)
+                    {
+                        if (previous == 0)
+                            previous = .001;
+
+                        var change = current - previous;
+                        return (double)change / previous;
+                    }
+
+                    Console.WriteLine("Shareholder Equity growth for " + BSresult.financials.Length.ToString() + " years  is : " + shegrowth.Average());
+
+
+                    company.SHAREHOLDER_EQUITY = shegrowth.Average();
+
+
+
 
                     // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
 
                     // in the mean time I will return a random number
-                    Random rnd = new Random();
-                    company.BOOK_VALUE = Convert.ToDouble(rnd.Next());
+                    //random rnd = new random();
+                    //company.book_value = convert.todouble(rnd.next());
 
 
-                    Console.WriteLine("Processing Dividends for BookValueProcessor.WebClientAPICallAsync");
+                    
                     return company;
                 }
                 else
                 {
+                    
                     throw new Exception(response.ReasonPhrase);
                 }
             }

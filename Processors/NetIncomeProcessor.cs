@@ -1,51 +1,76 @@
-﻿using System;
+﻿using Evesting;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks
+using System.Threading.Tasks;
 
 
-//net profit or net earnings found on income statement, link below
-// using async from tim corey video, not working yet. 
-//namespace Evesting
-//{
-//    public class NetIncomeProcessor
-//    {
+namespace Evesting
+{
+    public class NetIncomeProcessor : Processor
+    {
 
-//        public static async Task<NetIncomeModel> LoadNetIncomeAsync()
-//        {
-//            string url = "https://financialmodelingprep.com/api/v3/financials/income-statement/AAPL";
+        public override async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
+        {
+            string netincomeUrl = $"https://financialmodelingprep.com/api/v3/financials/income-statement/{ company.STOCK_TICKER}";
+            Console.WriteLine("Processing NetIncome.WebClientAPICallAsync");
 
-//            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
-//            {
-//                if (response.IsSuccessStatusCode)
-//                {
-//                    NetIncomeFinancialsModel result = await response.Content.ReadAsAsync<NetIncomeFinancialsModel>();
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(netincomeUrl))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Net_Income_Rootobject ISresult = await response.Content.ReadAsAsync<Net_Income_Rootobject>();
+
+                    //foreach (var item in ISresult.financials)
+                    //{
+                    //    Console.WriteLine("Total Net Income: " + item.NetIncome);
+                    //}
+
+                    List<double> growth = new List<double>();
+
+                    for (int i = 0; i < ISresult.financials.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+
+                        }
+                        else
+                        {
+                            double change = CalculateChange(ISresult.financials[i - 1].NetIncome, ISresult.financials[i].NetIncome);
+                            growth.Add(change);
+                            //Console.WriteLine("Net Income growth for " + i);
+                            //Console.WriteLine(change);
+                        }
+
+                    }
+
+                    double CalculateChange(double previous, double current)
+                    {
+                        if (previous == 0)
+                            throw new InvalidOperationException();
+
+                        var change = current - previous;
+                        return (double)change / previous;
+                    }
+
+                    Console.WriteLine("Net Income growth for " + ISresult.financials.Length.ToString() + " years  is : " + growth.Average());
 
 
+                    company.NET_INCOME = growth.Average();
 
 
-
-//                    return result.Financials;
-//                }
-//                else
-//                {
-//                    throw new Exception(response.ReasonPhrase);
-//                }
-//            }
-//        }
-
-//        public static async void LoadnetincomedataAsync()
-//        {
-
-//            var NetIncomeInfo = await NetIncomeProcessor.LoadNetIncomeAsync();
-//            Console.WriteLine("Net Income Async test");
-//            Console.WriteLine(NetIncomeInfo.Revenue);
-
-//        }
+                    return company;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
 
 
-
-
-//    }
-//}
+        }
+    }
+}

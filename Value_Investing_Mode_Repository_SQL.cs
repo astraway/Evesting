@@ -22,7 +22,7 @@ namespace Evesting
 
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("insert into Value_Investing_Companies ( STOCK_TICKER , CO_NAME , STOCK_PRICE , BOOK_VALUE , DIVIDENDS , OPERATING_CASH) values ( @STOCK_TICKER , @CO_NAME , @STOCK_PRICE , @BOOK_VALUE , @DIVIDENDS , @OPERATING_CASH)", ViCoModel);
+                cnn.Execute("insert into Value_Investing_Companies ( STOCK_TICKER , CO_NAME , STOCK_PRICE , BOOK_VALUE , DIVIDENDS , OPERATING_CASH, SHAREHOLDER_EQUITY) values ( @STOCK_TICKER , @CO_NAME , @STOCK_PRICE , @BOOK_VALUE , @DIVIDENDS , @OPERATING_CASH, @SHAREHOLDER_EQUITY)", ViCoModel);
             }
 
 
@@ -42,7 +42,7 @@ namespace Evesting
                 var output = cnn.Query<ValueInvestingCompanyDBModel>(sql, new DynamicParameters());
                 foreach (var x in output)
                 {
-                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER: " + x.STOCK_TICKER + " CO_NAME: " + x.CO_NAME + " STOCK_PRICE: " + x.STOCK_PRICE + " BOOK_VALUE: " + x.BOOK_VALUE + " DIVIDENDS: " + x.DIVIDENDS + " OPERATING_CASH: " + x.OPERATING_CASH);
+                    Console.WriteLine("ID: " + x.ID + " STOCK_TICKER: " + x.STOCK_TICKER + " CO_NAME: " + x.CO_NAME + " STOCK_PRICE: " + x.STOCK_PRICE + " BOOK_VALUE: " + x.BOOK_VALUE + " DIVIDENDS: " + x.DIVIDENDS + " OPERATING_CASH: " + x.OPERATING_CASH + " SHAREHOLDER_EQUITY: " + x.SHAREHOLDER_EQUITY);
                 }
 
                 return output.ToList();

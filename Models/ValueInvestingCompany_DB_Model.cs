@@ -19,6 +19,10 @@ namespace Evesting
 
         public double OPERATING_CASH { get; set; }
 
+        public double NET_INCOME { get; set; }
+
+        public double SHAREHOLDER_EQUITY { get; set; }
+
 
 
 

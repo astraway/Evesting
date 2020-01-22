@@ -51,8 +51,9 @@ namespace Evesting
             var bookvalue = await BookValueTask;
 
 
-
-
+            Processor NetIncome = processorFactory.CreateInstance("NetIncomeProcessor");
+            var NetIncomeTask = NetIncome.WebClientAPICallAsync(newCo);
+            var netincome = await NetIncomeTask;
 
 
 
