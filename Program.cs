@@ -15,8 +15,11 @@ namespace Evesting
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task  Main(string[] args)
         {
+
+
+
             
             Console.WriteLine("What is the stock name (ticker) you are looking for?");
             string stockName = Console.ReadLine().ToUpper();
@@ -27,54 +30,62 @@ namespace Evesting
             //used to connect to api
             ApiHelper.InitializeClient();
             //creates new object of the above inputs
-            CompanyDBModel newCo = new CompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
-            
+            ValueInvestingCompanyDBModel newCo = new ValueInvestingCompanyDBModel { CO_NAME = companyName, STOCK_TICKER = stockName };
 
 
-            SQL.WriteCompanyData(newCo);
-            
+            ProcessFactory processorFactory = new ProcessFactory();
 
-            //used to run the sync version of stock price api call
-            StockPriceProcessor.WebClientAPICall(newCo);
-            OperatingCashProcessor.WebClientAPICall(newCo);
-            BookValueProcessor.WebClientAPICall(newCo);
-
-            var CoResult = SQL.ReadCompanyData();
-            var FinancialResult = SQL.ReadCurrentFinancialsData();
-            var OperatingCash = SQL.ReadOperatingCashData();
-            var BookValue_Dividends = SQL.ReadDividendsData();
+            Processor StockPrice = processorFactory.CreateInstance("StockPriceProcessor");
+            var StockPriceTask = StockPrice.WebClientAPICallAsync(newCo);
+            var stockprice = await StockPriceTask;
 
 
+
+            Processor OperatingCash = processorFactory.CreateInstance("OperatingCashProcessor"); 
+            var OperatingCashTask = OperatingCash.WebClientAPICallAsync(newCo);
+            var operatingcash = await OperatingCashTask;
+
+
+            Processor BookValue = processorFactory.CreateInstance("BookValue__Plus_Dividends_Processor");
+            var BookValueTask = BookValue.WebClientAPICallAsync(newCo);
+            var bookvalue = await BookValueTask;
+
+
+            Processor NetIncome = processorFactory.CreateInstance("NetIncomeProcessor");
+            var NetIncomeTask = NetIncome.WebClientAPICallAsync(newCo);
+            var netincome = await NetIncomeTask;
+
+            Processor Sales = processorFactory.CreateInstance("SalesProcessor");
+            var SalesTask = Sales.WebClientAPICallAsync(newCo);
+            var salestask = await SalesTask;
+
+
+            //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
+            Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_SQL();
+            valueInvestingModeRepository.WriteDate(newCo);
+            valueInvestingModeRepository.ReadData();
 
         }
     }
 
 
 
-    
 
 
 
 
 
-    class Sales {
+
+
+
+
+  
+
+
+    class ROE {
         public void display()
         {
-            Console.WriteLine("Calculating Sales");
-        }
-    }
-
-    class OperatingCash {
-        public void display()
-        {
-            Console.WriteLine("Calculating Operating Cash ");
-        }
-    }
-
-
-    class ROI {
-        public void display()
-        {
+            //return on equity found already calculate on some sites, found by  net income(income statement)/Equity(balance sheet)
             Console.WriteLine("Calculating ROI");
         }
     }
@@ -82,6 +93,7 @@ namespace Evesting
     class ROIC  {
         public void display()
         {
+            //net income / (equity + Debt) 
             Console.WriteLine("Calculating ROIC");
         }
 
@@ -91,6 +103,7 @@ namespace Evesting
     class Debt {
         public void display()
         {
+            // debt 
             Console.WriteLine("Calculating Debt");
         }
 

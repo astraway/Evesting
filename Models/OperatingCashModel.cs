@@ -10,16 +10,16 @@ namespace Evesting
     using Newtonsoft.Json.Converters;
 
 
-    public partial class Top_Level
+    public partial class CashFlow_Top_Level
     {
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
 
         [JsonProperty("financials")]
-        public Financial[] Financials { get; set; }
+        public Balance_Sheet_Financial[] Financials { get; set; }
     }
 
-    public partial class Financial
+    public partial class Balance_Sheet_Financial
     {
         [JsonProperty("date")]
         public string Date { get; set; }
@@ -70,14 +70,14 @@ namespace Evesting
         public string NetCashMarketcap { get; set; }
     }
 
-    public partial class Top_Level
+    public partial class CashFlow_Top_Level
     {
-        public static Top_Level FromJson(string json) => JsonConvert.DeserializeObject<Top_Level>(json, Evesting.Converter.Settings);
+        public static CashFlow_Top_Level FromJson(string json) => JsonConvert.DeserializeObject<CashFlow_Top_Level>(json, Evesting.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Top_Level self) => JsonConvert.SerializeObject(self, Evesting.Converter.Settings);
+        public static string ToJson(this CashFlow_Top_Level self) => JsonConvert.SerializeObject(self, Evesting.Converter.Settings);
     }
 
     internal static class Converter

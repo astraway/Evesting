@@ -1,23 +1,20 @@
-﻿using Evesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Evesting
 {
-    public class NetIncomeProcessor : Processor
+    public class SalesProcessor : Processor
     {
-
         public override async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
         {
-            string netincomeUrl = $"https://financialmodelingprep.com/api/v3/financials/income-statement/{ company.STOCK_TICKER}";
-            Console.WriteLine("Processing NetIncome.WebClientAPICallAsync");
+            string salesUrl = $"https://financialmodelingprep.com/api/v3/financials/income-statement/{ company.STOCK_TICKER}";
+            Console.WriteLine("Processing SalesProcessor.WebClientAPICallAsync");
 
-            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(netincomeUrl))
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(salesUrl))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -34,15 +31,14 @@ namespace Evesting
                     {
                         if (i == 0)
                         {
-                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+                           
 
                         }
                         else
                         {
-                            double change = CalculateChange(ISresult.financials[i - 1].NetIncome, ISresult.financials[i].NetIncome);
+                            double change = CalculateChange(ISresult.financials[i - 1].Revenue, ISresult.financials[i].Revenue);
                             growth.Add(change);
-                            //Console.WriteLine("Net Income growth for " + i);
-                            //Console.WriteLine(change);
+                            
                         }
 
                     }
@@ -56,10 +52,10 @@ namespace Evesting
                         return (double)change / previous;
                     }
 
-                    Console.WriteLine("Net Income growth for " + ISresult.financials.Length.ToString() + " years  is : " + growth.Average());
+                    Console.WriteLine("Sales growth for " + ISresult.financials.Length.ToString() + " years  is : " + growth.Average());
 
 
-                    company.NET_INCOME = growth.Average();
+                    company.SALES = growth.Average();
 
 
                     return company;
@@ -72,5 +68,10 @@ namespace Evesting
 
 
         }
+
+
+
+
+
     }
 }

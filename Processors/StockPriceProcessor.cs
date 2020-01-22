@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Evesting
 {
-    class StockPriceProcessor
+    class StockPriceProcessor : Processor
     {
          //making a webclient call syncly
-        public static void WebClientAPICall(CompanyDBModel company)
+        public override ValueInvestingCompanyDBModel WebClientAPICall(ValueInvestingCompanyDBModel company)
         {
 
             string Json = "";
@@ -20,18 +20,25 @@ namespace Evesting
             Json = client.DownloadString($"https://financialmodelingprep.com/api/v3/stock/real-time-price/{ company.STOCK_TICKER}");
 
             StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(Json);
-
-            Current_Financials_DB_Model StockPrice = new Current_Financials_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), STOCK_TICKER = company.STOCK_TICKER };
-
-            SQL.WriteCurrentFinancialsData(StockPrice);
-
             
+            
+            //writting to stock price db
+            Current_StockPrice_DB_Model StockPrice = new Current_StockPrice_DB_Model { STOCK_PRICE = (Convert.ToDouble(Sp_json.Price)), STOCK_TICKER = company.STOCK_TICKER };
+            SQL.WriteCurrentStockPriceData(StockPrice);
+
+            //assigning stock price to company object
+            company.STOCK_PRICE = StockPrice.STOCK_PRICE;
+
+            return company;
         }
 
+
+
+
         //making a call async 
-        private static async Task<StockPriceModel> WebClientAPICallAsync()
+        public override async Task<ValueInvestingCompanyDBModel> WebClientAPICallAsync(ValueInvestingCompanyDBModel company)
         {
-            string url = "https://financialmodelingprep.com/api/v3/stock/real-time-price/GOOGL";
+            string url = $"https://financialmodelingprep.com/api/v3/stock/real-time-price/{ company.STOCK_TICKER}";
 
             using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(url))
             {
@@ -39,9 +46,10 @@ namespace Evesting
                 {
                     StockPriceModel result = await response.Content.ReadAsAsync<StockPriceModel>();
 
-                    
-                    Console.WriteLine("writting to Current Financials db in WebClientAPICallAsync");
-                    return result;
+                    company.STOCK_PRICE = result.Price;
+
+                    Console.WriteLine("Processing StockPriceProcessor.WebClientAPICallAsync");
+                    return company;
                 }
                 else
                 {
@@ -50,16 +58,8 @@ namespace Evesting
             }
         }
 
-        //making a call async , call this to call the above. 
-        public static async void LoadStockPriceDataAsync()
-        {
+        
 
-            var result = await StockPriceProcessor.WebClientAPICallAsync();
-            Console.WriteLine("Stock price Async test");
-            Console.WriteLine(result.Price);
-
-
-        }
 
 
     }
