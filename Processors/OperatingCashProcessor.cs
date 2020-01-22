@@ -6,6 +6,7 @@ using System.Text;
 using Newtonsoft.Json.Converters;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Linq;
 
 namespace Evesting
 {
@@ -29,7 +30,11 @@ namespace Evesting
             {
                 Operating_Cash_DB_Model OperatingCash = new Operating_Cash_DB_Model { DATE = (item.Date), OPERATING_CASH_FLOW = (item.OperatingCashFlow), STOCK_TICKER = company.STOCK_TICKER };
                 SQL.WriteOperatingCashData(OperatingCash);
+                
+
             }
+ 
+
 
 
             //Operating_Cash_DB_Model OperatingCash = new Operating_Cash_DB_Model { DATE = (OCJson.Symbol[0]), OPERATING_CASH_FLOW = OCJson.  , STOCK_TICKER = company.STOCK_TICKER };
@@ -56,20 +61,48 @@ namespace Evesting
             {
                 if (response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("Processing OperatingCash.WebClientAPICallAsync");
                     CashFlow_Top_Level result = await response.Content.ReadAsAsync<CashFlow_Top_Level>();
 
-                    foreach (var item in result.Financials)
+                    //foreach (var item in result.Financials)
+                    //{
+                    //    Console.WriteLine("Operating cash : " + item.OperatingCashFlow);
+                    //}
+
+                    List<double> growth = new List<double>();
+
+                    for (int i = 0; i < result.Financials.Length; i++)
                     {
-                        Console.WriteLine("Operating cash : " + item.OperatingCashFlow);
+                        if (i == 0)
+                        {
+                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+
+                        }
+                        else
+                        {
+                            double change = CalculateChange(result.Financials[i - 1].OperatingCashFlow, result.Financials[i].OperatingCashFlow);
+                            growth.Add(change);
+                            //Console.WriteLine("growth for " + i);
+                            //Console.WriteLine(change);
+                        }
+
                     }
-                    
-                    
-                    
-                    Random rnd = new Random();
-                    company.OPERATING_CASH = Convert.ToDouble(rnd.Next());
 
+                    double CalculateChange(double previous, double current)
+                    {
+                        if (previous == 0)
+                            throw new InvalidOperationException();
 
-                    Console.WriteLine("Processing OperatingCash.WebClientAPICallAsync");
+                        var change = current - previous;
+                        return (double)change / previous;
+                    }
+
+                    Console.WriteLine("Operating Cash growth for " + result.Financials.Length.ToString() + " years  is : " + growth.Average());
+                    
+
+                    company.OPERATING_CASH = growth.Average();
+
+                    
                     return company;
                 }
                 else

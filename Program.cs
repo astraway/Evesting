@@ -17,6 +17,9 @@ namespace Evesting
     {
         static async Task  Main(string[] args)
         {
+
+
+
             
             Console.WriteLine("What is the stock name (ticker) you are looking for?");
             string stockName = Console.ReadLine().ToUpper();
@@ -46,19 +49,21 @@ namespace Evesting
             Processor BookValue = processorFactory.CreateInstance("BookValue__Plus_Dividends_Processor");
             var BookValueTask = BookValue.WebClientAPICallAsync(newCo);
             var bookvalue = await BookValueTask;
-            
 
 
+            Processor NetIncome = processorFactory.CreateInstance("NetIncomeProcessor");
+            var NetIncomeTask = NetIncome.WebClientAPICallAsync(newCo);
+            var netincome = await NetIncomeTask;
+
+            Processor Sales = processorFactory.CreateInstance("SalesProcessor");
+            var SalesTask = Sales.WebClientAPICallAsync(newCo);
+            var salestask = await SalesTask;
 
 
-
-
-            //var FinancialResult = SQL.ReadCurrentStockPriceData();
-            //var OperatingCash = SQL.ReadOperatingCashData();
-            //var BookValue_Dividends = SQL.ReadDividendsData();
-
-            SQL.WriteValueInvestingCompanyData(newCo);
-            SQL.DisplayValueInvestingCompanyData();
+            //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
+            Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_SQL();
+            valueInvestingModeRepository.WriteDate(newCo);
+            valueInvestingModeRepository.ReadData();
 
         }
     }
@@ -72,24 +77,15 @@ namespace Evesting
 
 
 
-    class Sales {
-        public void display()
-        {
-            Console.WriteLine("Calculating Sales");
-        }
-    }
-
-    class OperatingCash {
-        public void display()
-        {
-            Console.WriteLine("Calculating Operating Cash ");
-        }
-    }
 
 
-    class ROI {
+  
+
+
+    class ROE {
         public void display()
         {
+            //return on equity found already calculate on some sites, found by  net income(income statement)/Equity(balance sheet)
             Console.WriteLine("Calculating ROI");
         }
     }
@@ -97,6 +93,7 @@ namespace Evesting
     class ROIC  {
         public void display()
         {
+            //net income / (equity + Debt) 
             Console.WriteLine("Calculating ROIC");
         }
 
@@ -106,6 +103,7 @@ namespace Evesting
     class Debt {
         public void display()
         {
+            // debt 
             Console.WriteLine("Calculating Debt");
         }
 

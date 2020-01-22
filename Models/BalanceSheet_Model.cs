@@ -42,7 +42,7 @@ namespace Evesting
 
 
         [JsonProperty(PropertyName = "Total shareholders equity")]
-        public string Totalshareholdersequity { get; set; }
+        public double Totalshareholdersequity { get; set; }
 
         public string Investments { get; set; }
         public string NetDebt { get; set; }
