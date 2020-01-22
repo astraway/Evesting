@@ -20,7 +20,7 @@ namespace Evesting
 
             Json = client.DownloadString($"https://financialmodelingprep.com/api/v3/financials/cash-flow-statement/{ company.STOCK_TICKER}");
 
-            //StockPriceModel Sp_json = JsonConvert.DeserializeObject<StockPriceModel>(Json);
+            
 
             var OCJson = CashFlow_Top_Level.FromJson(Json);
 
@@ -33,7 +33,7 @@ namespace Evesting
 
             }
 
-            //next I need to implement book value and add these two together
+            
 
 
 
@@ -72,7 +72,7 @@ namespace Evesting
                     {
                         if (i == 0)
                         {
-                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+                           
 
                         }
                         else
@@ -101,12 +101,7 @@ namespace Evesting
 
 
                     
-                    
-                    // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
 
-                    // in the mean time I will return a random number
-                    //Random rnd = new Random();
-                    //company.DIVIDENDS = Convert.ToDouble(rnd.Next());
 
 
                     
@@ -139,15 +134,14 @@ namespace Evesting
                     {
                         if (i == 0)
                         {
-                            //growth.Add(OCJson.Financials[i].OperatingCashFlow);
+                            
 
                         }
                         else
                         {
                             double change = CalculateChange(BSresult.financials[i - 1].Totalshareholdersequity, BSresult.financials[i].Totalshareholdersequity);
                             shegrowth.Add(change);
-                            //Console.WriteLine("Net Income growth for " + i);
-                            //Console.WriteLine(change);
+                 
                         }
 
                     }
@@ -165,15 +159,6 @@ namespace Evesting
 
 
                     company.SHAREHOLDER_EQUITY = shegrowth.Average();
-
-
-
-
-                    // going to need to implement a loop and put all of the yearly values into some colleciton, then find if it is 10% growth and return that percentage.
-
-                    // in the mean time I will return a random number
-                    //random rnd = new random();
-                    //company.book_value = convert.todouble(rnd.next());
 
 
                     

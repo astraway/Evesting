@@ -13,7 +13,6 @@ namespace Evesting
 
         public double STOCK_PRICE { get; set; }
 
-        public double BOOK_VALUE { get; set; }
 
         public double DIVIDENDS { get; set; }
 
@@ -22,6 +21,8 @@ namespace Evesting
         public double NET_INCOME { get; set; }
 
         public double SHAREHOLDER_EQUITY { get; set; }
+
+        public double SALES { get; set; }
 
 
 

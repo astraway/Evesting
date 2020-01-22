@@ -6,16 +6,16 @@ using System.Text;
 namespace Evesting
 {
 
-    public class Net_Income_Rootobject
+    public class Income_Statement_Rootobject
     {
         public string symbol { get; set; }
-        public Net_Income_Financial[] financials { get; set; }
+        public Income_Statement_Financial[] financials { get; set; }
     }
 
-    public class Net_Income_Financial
+    public class Income_Statement_Financial
     {
         public string date { get; set; }
-        public string Revenue { get; set; }
+        public double Revenue { get; set; }
         public string RevenueGrowth { get; set; }
         public string CostofRevenue { get; set; }
         public string GrossProfit { get; set; }

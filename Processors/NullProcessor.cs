@@ -18,7 +18,7 @@ namespace Evesting
 
 
             Random rnd = new Random();
-            company.BOOK_VALUE = Convert.ToDouble(rnd.Next());
+            company.SALES = Convert.ToDouble(rnd.Next());
 
             return company;
         }

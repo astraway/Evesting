@@ -55,7 +55,9 @@ namespace Evesting
             var NetIncomeTask = NetIncome.WebClientAPICallAsync(newCo);
             var netincome = await NetIncomeTask;
 
-
+            Processor Sales = processorFactory.CreateInstance("SalesProcessor");
+            var SalesTask = Sales.WebClientAPICallAsync(newCo);
+            var salestask = await SalesTask;
 
 
             //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
@@ -75,19 +77,9 @@ namespace Evesting
 
 
 
-    class Sales {
-        public void display()
-        {
-            Console.WriteLine("Calculating Sales");
-        }
-    }
 
-    class OperatingCash {
-        public void display()
-        {
-            Console.WriteLine("Calculating Operating Cash ");
-        }
-    }
+
+  
 
 
     class ROE {
