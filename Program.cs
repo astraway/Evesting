@@ -61,7 +61,7 @@ namespace Evesting
 
 
             //switch this to using dependecny injection. per https://www.youtube.com/watch?v=qJmEI2LtXIY&t=2s
-            Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_SQL();
+            Value_Investing_Mode_Repository valueInvestingModeRepository = new Value_Investing_Mode_Repository_Postgres();
             valueInvestingModeRepository.WriteDate(newCo);
             valueInvestingModeRepository.ReadData();
 
